@@ -10,16 +10,23 @@ const { readdirSync } = require('fs')
 
 //DatabaseMongo
 const connectToDB = require('./config/db')
+const { credential } = require('firebase-admin')
 connectToDB()
 
 //app
 const app = express();
 
+const corsConfig = {
+    origin: '*', // หรือ domain ของ frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true 
+}
 
 //middleware
 app.use(morgan("dev")) //คือบอกว่ามีการrequestมาจะแจ้งเตือนในฝั่งหลังบ้าน
 app.use(bodyParser.json({limit: '20mb'}))
-app.use(cors())
+app.options("",cors(corsConfig))
+app.use(cors(corsConfig))
 
 
 
