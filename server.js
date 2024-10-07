@@ -19,12 +19,7 @@ const app = express();
 //middleware
 app.use(morgan("dev")) //คือบอกว่ามีการrequestมาจะแจ้งเตือนในฝั่งหลังบ้าน
 app.use(bodyParser.json({limit: '20mb'}))
-app.use(cors({
-    origin: '*', // หรือ domain ของ frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true // ถ้าจำเป็น
-  }));
+app.use(cors())
 
 
 
