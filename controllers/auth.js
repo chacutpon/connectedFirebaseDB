@@ -43,17 +43,26 @@ exports.createAndUpdateUser = async (req, res) => {
     }
 };
 //เอาง่ายๆคือเวลาแก้ไขข้อมูลตอนเขียนโค้ดหรือรีเฟรชหรือทำอะไรต่างๆไม่ต้องกด login ใหม่มันยังคงเป็น user คนนั้นตราบใดที่ยังไม่กด logout
-exports.currentUser = async(req,res)=>{ //เป็นการเช็คว่าเวลามีหน้าอื่นหลายๆหน้าผู้ที่loginปัจจุบันก็จะยังคงอยู่ไม่หลุดออก
-    try{
-        const user = await Users.findOne({ //req.user มาจาก middleware ที่ผ่านdารตรวจ verifytoken
-            email: req.user.email,         
-        }).exec()
-        res.send(user)
-    }catch(err){
-        console.log('Server Error!!');       
-        res.status(400).send('Server Error!!')    
+exports.currentUser = async (req, res) => {
+    try {
+        // ตรวจสอบว่ามี req.user หรือไม่
+        if (!req.user || !req.user.email) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const user = await Users.findOne({ email: req.user.email }).exec();
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json(user);
+    } catch (err) {
+        console.error("Error fetching current user:", err); // แสดงข้อผิดพลาดใน console
+        res.status(500).json({ message: "Failed to fetch current user" }); // ส่งข้อความที่ชัดเจนกว่า
     }
-}
+};
+
 
 exports.listUsers = async (req, res) => {
     try {
